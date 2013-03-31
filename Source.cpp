@@ -1,66 +1,30 @@
 #include <stdio.h>
-#include <math.h>
+#include <string.h>
 
-char maze[10][10];
-int N, M, T, dx, dy;
-int isSucc = 0;
-void dfs(int x, int y, int cnt)
-{
-	if (cnt > T)
-		return;
-	if (x == dx && y == dy && cnt == T)
-	{
-		isSucc = 1;
-		return;
-	}
-
-	int temp = (T - cnt) - abs(dx - x) - abs(dy - y);
-	if (temp < 0 || temp % 2 == 1)
-		return;
-
-	maze[x][y] = 'X';
-
-	if (x - 1 >= 0 && maze[x - 1][y] != 'X')
-		dfs(x - 1, y, cnt + 1);
-	if (x + 1 < N && maze[x + 1][y] != 'X')
-		dfs(x + 1, y, cnt + 1);
-	if (y - 1 >= 0 && maze[x][y - 1] != 'X')
-		dfs(x, y - 1, cnt + 1);
-	if (y + 1 < M && maze[x][y + 1] != 'X')
-		dfs(x, y + 1, cnt + 1);
-
-	maze[x][y] = '.';
-}
-
+double ar[1005], br[1005];
 int main()
 {
-	freopen("data.txt", "r", stdin);
-	while (scanf("%d%d%d", &N, &M, &T) != EOF && N || M || T)
+	int N, i, j;
+	while (scanf("%d", &N) != EOF && N)
 	{
-		int i, j, si, sj, w = 0;
-		isSucc = 0;
-		getchar();
-		for (i = 0; i < N; i++)
+		memset(ar, 0, sizeof(ar));
+		memset(br, 0, sizeof(br));
+		double max, sum;
+		max = sum = 0;
+		for (i = 1; i <= N; i++)
+			scanf("%lf", &ar[i]);
+		for (i = 1; i <= N; i++)
 		{
-			for (j = 0; j < M; j++)
+			for (j = 0; j < i; j++)
 			{
-				scanf("%c", &maze[i][j]);
-				if (maze[i][j] == 'X')
-					w++;
-				else if (maze[i][j] == 'D')
-					dx = i, dy = j;
-				else if (maze[i][j] == 'S')
-					si = i, sj = j;
+				if (ar[i] > ar[j] && br[j] + ar[i] > br[i])
+					br[i] = br[j] + ar[i];
 			}
-			getchar();
+			if (br[i] > max)
+				max = br[i];
 		}
-		if (M * N - w > T)
-			dfs(si, sj, 0);
-
-		if (isSucc)
-			printf("YES\n");
-		else
-			printf("NO\n");
+		printf("%.0lf\n", max);
 	}
+
 	return 0;
 }
